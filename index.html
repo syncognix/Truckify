@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Truckify — Truck Dispatching for Owner-Operators &amp; Small Fleets</title>
+    <meta
+      name="description"
+      content="Truckify is a truck dispatching partner for owner-operators and small fleets: load sourcing, rate negotiation, broker communication and back-office paperwork, handled."
+    />
+    <!-- TODO(launch): replace example domain with the production domain. -->
+    <link rel="canonical" href="https://www.truckify.example/" />
+    <meta name="theme-color" content="#0A0A09" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F1EDE4" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Truckify" />
+    <meta property="og:title" content="Truckify — You run the road. We run the board." />
+    <meta
+      property="og:description"
+      content="Truck dispatching for owner-operators and small fleets: loads sourced, rates negotiated, paperwork handled."
+    />
+    <meta property="og:url" content="https://www.truckify.example/" />
+    <meta property="og:image" content="https://www.truckify.example/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Each page's hero poster is its LCP image: preload the right one before JS boots.
+         Keep this map in sync with PAGE_VIDEO in src/data/pages.ts. -->
+    <script>
+      ;(function () {
+        var map = { '/': 'home', '/services': 'services', '/how-it-works': 'process', '/lanes': 'lanes', '/about': 'about', '/faq': 'faq', '/contact': 'contact' }
+        var name = map[location.pathname.replace(/\/+$/, '') || '/']
+        if (!name) return
+        var l = document.createElement('link')
+        l.rel = 'preload'
+        l.as = 'image'
+        l.type = 'image/avif'
+        l.setAttribute('imagesrcset', '/media/video/' + name + '-poster-854.avif 854w, /media/video/' + name + '-poster-1280.avif 1280w')
+        l.setAttribute('imagesizes', '100vw')
+        l.setAttribute('fetchpriority', 'high')
+        document.head.appendChild(l)
+      })()
+    </script>
+
+    <!-- Apply the saved / system theme before first paint to avoid a flash. -->
+    <script>
+      try {
+        var t = localStorage.getItem('truckify-theme')
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+        document.documentElement.dataset.theme = t
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: system-ui">
+        Truckify — truck dispatching for owner-operators and small fleets. Please enable JavaScript for the full
+        experience.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

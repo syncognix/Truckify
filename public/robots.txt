@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO(launch): update domain
+Sitemap: https://www.truckify.example/sitemap.xml
