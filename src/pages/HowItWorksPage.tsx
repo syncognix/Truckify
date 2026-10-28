@@ -4,8 +4,10 @@ import { PageHero } from '../components/PageHero'
 import { PROCESS } from '../data/content'
 import { PAGES } from '../data/pages'
 import { usePageMeta } from '../lib/page-meta'
+import { HoursClock } from '../sections/HoursClock'
 import { Onboarding } from '../sections/Onboarding'
 import { Process } from '../sections/Process'
+import { TypeRibbons } from '../sections/TypeRibbons'
 
 export default function HowItWorksPage() {
   usePageMeta(PAGES.process)
@@ -39,7 +41,9 @@ export default function HowItWorksPage() {
         }
       />
       <Process index="01" />
-      <Onboarding index="02" />
+      <TypeRibbons />
+      <HoursClock index="02" />
+      <Onboarding index="03" />
       <CtaBand title="Ready for" accent="step one?" />
     </>
   )

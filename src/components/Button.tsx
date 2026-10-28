@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
+import { useMagnetic } from '../lib/use-pointer-fx'
 import { Link } from '../lib/router'
 
 type Variant = 'signal' | 'glass' | 'ghost'
@@ -30,8 +31,10 @@ interface ButtonLinkProps {
 
 /** Pill CTA with a circular "knob" whose arrow slides through on hover. */
 export function ButtonLink({ href, children, variant = 'signal', className = '', icon, onClick }: ButtonLinkProps) {
+  const ref = useRef<HTMLAnchorElement>(null)
+  useMagnetic(ref, variant === 'ghost' ? 0.15 : 0.25)
   return (
-    <Link href={href} onClick={onClick} className={`${base} ${variants[variant]} ${className}`}>
+    <Link ref={ref} href={href} onClick={onClick} className={`${base} ${variants[variant]} ${className}`}>
       <span className="relative z-10 text-[0.95rem]">{children}</span>
       <Knob variant={variant}>{icon}</Knob>
     </Link>

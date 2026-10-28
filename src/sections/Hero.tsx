@@ -6,12 +6,14 @@ import { HeroShade } from '../components/PageHero'
 import { SplitWords } from '../components/Reveal'
 import { PAGE_VIDEO } from '../data/pages'
 import { useHeroParallax } from '../lib/use-hero-parallax'
+import { useHeadlight } from '../lib/use-pointer-fx'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
 export function Hero() {
   const root = useRef<HTMLElement>(null)
   useHeroParallax(root)
+  useHeadlight(root)
 
   return (
     <section ref={root} aria-labelledby="hero-title" className="relative isolate min-h-[max(100svh,680px)] overflow-hidden">

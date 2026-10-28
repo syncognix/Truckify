@@ -1,93 +1,216 @@
-import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { Picture } from '../components/Picture'
 import { GALLERY } from '../data/content'
 import type { GalleryTile } from '../data/types'
-import { gsap, MQ, useGSAP } from '../lib/gsap'
 import { useMediaQuery } from '../lib/use-media-query'
 
 /**
- * Mixed-media field notes. Desktop: the section pins and vertical scroll
- * drives the track sideways. Touch / small screens / reduced motion: a native
- * horizontal scroller with snap points, contained so the page never overflows.
+ * Mixed-media field notes in a native horizontal scroller: a visible signal
+ * scrollbar underneath, prev/next buttons, mouse drag, trackpad and touch
+ * swipe. Deliberately not scroll-jacked so it behaves the same everywhere.
  */
 export function Gallery({ index = '05' }: { index?: string }) {
-  const root = useRef<HTMLElement>(null)
-  const track = useRef<HTMLDivElement>(null)
-  const scrubbed = useMediaQuery(MQ.motionDesktop)
+  const scroller = useRef<HTMLDivElement>(null)
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null)
+  const [edge, setEdge] = useState({ start: true, end: false })
+  const [progress, setProgress] = useState(0)
+  const [ratio, setRatio] = useState(0.3)
+  const reduce = useMediaQuery('(prefers-reduced-motion: reduce)')
 
-  useGSAP(
-    () => {
-      if (!scrubbed || !track.current) return
-      const el = track.current
-      const distance = () => el.scrollWidth - window.innerWidth
-      const travel = gsap.to(el, {
-        x: () => -distance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: () => `+=${distance()}`,
-          pin: true,
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-        },
-      })
-      // Each photo eases from a slight push-in to rest as it crosses the frame.
-      gsap.utils.toArray<HTMLElement>('[data-tile-photo]', el).forEach((img) => {
-        gsap.fromTo(img, { scale: 1.18 }, {
-          scale: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: img,
-            containerAnimation: travel,
-            start: 'left right',
-            end: 'right left',
-            scrub: true,
-          },
-        })
-      })
+  const measure = useCallback(() => {
+    const el = scroller.current
+    if (!el) return
+    const max = el.scrollWidth - el.clientWidth
+    setEdge({ start: el.scrollLeft <= 2, end: el.scrollLeft >= max - 2 })
+    setProgress(max > 0 ? el.scrollLeft / max : 0)
+    setRatio(el.scrollWidth > 0 ? Math.min(1, el.clientWidth / el.scrollWidth) : 1)
+  }, [])
+
+  useEffect(() => {
+    const el = scroller.current
+    if (!el) return
+    measure()
+    el.addEventListener('scroll', measure, { passive: true })
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => {
+      el.removeEventListener('scroll', measure)
+      ro.disconnect()
+    }
+  }, [measure])
+
+  const railControls: RailControls = {
+    metrics: () => {
+      const el = scroller.current
+      return { left: el?.scrollLeft ?? 0, max: el ? el.scrollWidth - el.clientWidth : 0 }
     },
-    { scope: root, dependencies: [scrubbed], revertOnUpdate: true },
-  )
+    setLeft: (px, smooth = false) =>
+      scroller.current?.scrollTo({ left: px, behavior: smooth && !reduce ? 'smooth' : 'auto' }),
+    setDragging: (dragging) => {
+      if (scroller.current) scroller.current.dataset.dragging = String(dragging)
+    },
+  }
+
+  const step = (dir: 1 | -1) => {
+    const el = scroller.current
+    if (!el) return
+    el.scrollBy({ left: dir * el.clientWidth * 0.75, behavior: reduce ? 'auto' : 'smooth' })
+  }
+
+  // Click-and-drag for mouse users (touch and trackpads scroll natively).
+  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !scroller.current) return
+    drag.current = { x: e.clientX, left: scroller.current.scrollLeft, moved: false }
+  }
+  const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    const d = drag.current
+    const el = scroller.current
+    if (!d || !el) return
+    const dx = e.clientX - d.x
+    if (!d.moved && Math.abs(dx) > 4) {
+      d.moved = true
+      el.setPointerCapture(e.pointerId)
+      el.dataset.dragging = 'true'
+    }
+    if (d.moved) el.scrollLeft = d.left - dx
+  }
+  const endDrag = () => {
+    drag.current = null
+    if (scroller.current) scroller.current.dataset.dragging = 'false'
+  }
 
   return (
-    <section ref={root} aria-labelledby="gallery-title" className="relative overflow-hidden bg-bg-sunk">
-      <div className={`flex flex-col ${scrubbed ? 'h-screen justify-center' : 'py-24'}`}>
-        <div className="shell mb-10 flex items-end justify-between gap-6">
-          <div>
-            <p className="label mb-4 flex items-center gap-3 text-ink-muted">
-              <span className="text-accent-text">{index}</span>
-              <span className="h-px w-8 bg-line-strong" />
-              Field notes
-            </p>
-            <h2 id="gallery-title" className="text-title font-semibold tracking-[-0.045em]">
-              Life on the <span className="font-serif font-light italic">long haul.</span>
-            </h2>
-          </div>
-          <p className="label hidden text-ink-faint md:block">{scrubbed ? 'Scroll to travel →' : 'Swipe →'}</p>
+    <section aria-labelledby="gallery-title" className="relative overflow-hidden bg-bg-sunk py-24 sm:py-32">
+      <div className="shell mb-10 flex items-end justify-between gap-6">
+        <div>
+          <p className="label mb-4 flex items-center gap-3 text-ink-muted">
+            <span className="text-accent-text">{index}</span>
+            <span className="h-px w-8 bg-line-strong" />
+            Field notes
+          </p>
+          <h2 id="gallery-title" className="text-title font-semibold tracking-[-0.045em]">
+            Life on the <span className="font-serif font-light italic">long haul.</span>
+          </h2>
         </div>
-
-        <div
-          className={
-            scrubbed
-              ? ''
-              : 'snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
-          }
-          tabIndex={scrubbed ? undefined : 0}
-          aria-label={scrubbed ? undefined : 'Gallery, scroll horizontally'}
-          role={scrubbed ? undefined : 'region'}
-        >
-          <div
-            ref={track}
-            className="flex w-max items-center gap-4 px-[clamp(1.25rem,4vw,3.5rem)] will-change-transform"
-          >
-            {GALLERY.map((tile, i) => (
-              <Tile key={i} tile={tile} index={i} />
-            ))}
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="label mr-3 hidden text-ink-faint tabular-nums md:inline">
+            {String(Math.round(progress * 100)).padStart(3, '0')}% · Drag or scroll →
+          </span>
+          <GalleryButton label="Previous photos" disabled={edge.start} onClick={() => step(-1)}>
+            <ArrowLeft className="size-4" />
+          </GalleryButton>
+          <GalleryButton label="Next photos" disabled={edge.end} onClick={() => step(1)}>
+            <ArrowRight className="size-4" />
+          </GalleryButton>
         </div>
       </div>
+
+      <div
+        ref={scroller}
+        role="region"
+        aria-label="Field notes gallery, scroll horizontally"
+        tabIndex={0}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        className="gallery-scroller snap-x snap-proximity overflow-x-auto overscroll-x-contain data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none data-[dragging=true]:select-none"
+      >
+        <div className="flex w-max items-center gap-4 px-[clamp(1.25rem,4vw,3.5rem)]">
+          {GALLERY.map((tile, i) => (
+            <Tile key={i} tile={tile} index={i} />
+          ))}
+        </div>
+      </div>
+
+      <div className="shell mt-8">
+        <ScrollRail controls={railControls} progress={progress} ratio={ratio} />
+      </div>
     </section>
+  )
+}
+
+interface RailControls {
+  /** Current scroll offset and maximum, in px. */
+  metrics: () => { left: number; max: number }
+  setLeft: (px: number, smooth?: boolean) => void
+  setDragging: (dragging: boolean) => void
+}
+
+/**
+ * Always-visible scrollbar for the gallery (native ones hide on macOS and many
+ * trackpads). Drag the thumb, or click the rail to jump; mirrors scrollLeft.
+ */
+function ScrollRail({ controls, progress, ratio }: { controls: RailControls; progress: number; ratio: number }) {
+  const rail = useRef<HTMLDivElement>(null)
+  const grab = useRef<{ x: number; left: number } | null>(null)
+  const usableWidth = () => (rail.current?.getBoundingClientRect().width ?? 1) * (1 - ratio) || 1
+
+  const jump = (clientX: number) => {
+    const r = rail.current?.getBoundingClientRect()
+    if (!r) return
+    const p = Math.min(1, Math.max(0, (clientX - r.left - (r.width * ratio) / 2) / usableWidth()))
+    controls.setLeft(p * controls.metrics().max, true)
+  }
+
+  const onThumbDown = (e: PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    grab.current = { x: e.clientX, left: controls.metrics().left }
+    controls.setDragging(true)
+  }
+  const onThumbMove = (e: PointerEvent<HTMLDivElement>) => {
+    const g = grab.current
+    if (!g) return
+    controls.setLeft(g.left + ((e.clientX - g.x) * controls.metrics().max) / usableWidth())
+  }
+  const onThumbUp = () => {
+    grab.current = null
+    controls.setDragging(false)
+  }
+
+  return (
+    <div
+      ref={rail}
+      aria-hidden
+      onPointerDown={(e) => jump(e.clientX)}
+      className="group relative h-6 cursor-pointer touch-none"
+    >
+      <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-line-strong" />
+      <div
+        onPointerDown={onThumbDown}
+        onPointerMove={onThumbMove}
+        onPointerUp={onThumbUp}
+        onPointerCancel={onThumbUp}
+        style={{ width: `${ratio * 100}%`, left: `${progress * (1 - ratio) * 100}%` }}
+        className="absolute top-1/2 h-1.5 -translate-y-1/2 cursor-grab rounded-full bg-accent shadow-[0_0_18px_color-mix(in_oklab,var(--c-accent)_55%,transparent)] transition-[height] duration-300 group-hover:h-2.5 active:cursor-grabbing"
+      />
+    </div>
+  )
+}
+
+function GalleryButton({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string
+  disabled: boolean
+  onClick: () => void
+  children: ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="grid size-11 place-items-center rounded-full border border-line-strong text-ink transition-colors duration-300 hover:border-accent hover:bg-accent hover:text-accent-ink disabled:pointer-events-none disabled:opacity-30"
+    >
+      {children}
+    </button>
   )
 }
 
@@ -101,7 +224,7 @@ function Tile({ tile, index }: { tile: GalleryTile; index: number }) {
       return (
         <figure className={`group relative shrink-0 snap-center overflow-hidden rounded-panel ${TILE_H} ${w}`}>
           <Picture
-            data-tile-photo
+            draggable={false}
             photo={tile.photo}
             sizes="(min-width: 1024px) 50vw, 85vw"
             className="photo h-full w-full object-cover group-hover:[filter:none]"

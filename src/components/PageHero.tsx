@@ -3,6 +3,7 @@ import { useRef, type ReactNode } from 'react'
 import { PAGE_VIDEO, type PageKey } from '../data/pages'
 import { Link } from '../lib/router'
 import { useHeroParallax } from '../lib/use-hero-parallax'
+import { useHeadlight } from '../lib/use-pointer-fx'
 import { HeroVideo } from './HeroVideo'
 import { SplitWords } from './Reveal'
 
@@ -20,6 +21,7 @@ export function HeroShade() {
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--c-bg)_55%,transparent),transparent_30%)]" />
       <div aria-hidden data-hero-shade className="absolute inset-0 bg-bg opacity-0" />
       <div aria-hidden className="hairline-grid absolute inset-0 opacity-40 [mask-image:linear-gradient(180deg,black,transparent_85%)]" />
+      <div aria-hidden className="headlight absolute inset-0" />
     </>
   )
 }
@@ -39,6 +41,7 @@ interface PageHeroProps {
 export function PageHero({ page, code, eyebrow, title, accent, lede, actions, aside }: PageHeroProps) {
   const root = useRef<HTMLElement>(null)
   useHeroParallax(root)
+  useHeadlight(root)
 
   return (
     <section ref={root} aria-labelledby="page-title" className="relative isolate overflow-hidden">

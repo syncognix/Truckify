@@ -5,7 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
-  type AnchorHTMLAttributes,
+  type ComponentPropsWithRef,
   type MouseEvent,
   type ReactNode,
 } from 'react'
@@ -82,7 +82,7 @@ export function useRouter() {
   return ctx
 }
 
-type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+type LinkProps = ComponentPropsWithRef<'a'> & { href: string }
 
 /** Internal link: real `href` for crawlers and new tabs, client-side navigation on click. */
 export function Link({ href, onClick, ...rest }: LinkProps) {

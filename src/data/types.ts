@@ -71,4 +71,6 @@ export interface Testimonial {
   quote: string
   name: string
   role: string
+  /** Placeholder copy for layout/demo — renders a visible "Sample" tag. Replace with real, permitted quotes. */
+  sample?: boolean
 }

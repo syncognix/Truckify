@@ -209,7 +209,44 @@ export const GALLERY: GalleryTile[] = [
 ]
 
 /**
- * Only add real, attributable client testimonials (with permission).
- * The section stays hidden while this list is empty.
+ * DEMO testimonials (flagged `sample`) so the layout can be reviewed. They are
+ * not from real clients: replace with real, attributable quotes (with
+ * permission) before launch, and drop the `sample` flag.
  */
-export const TESTIMONIALS: Testimonial[] = []
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    quote:
+      'I used to spend half my morning on the load boards and the phone. Now I wake up to options that already fit my lanes, and I just say yes or no.',
+    name: 'Owner-operator',
+    role: 'Dry van · Texas',
+    sample: true,
+  },
+  {
+    quote:
+      'They know my floor rate and they stick to it. I’ve never been pushed into a load I didn’t want, and the paperwork is just… done.',
+    name: 'Owner-operator',
+    role: 'Reefer · Georgia',
+    sample: true,
+  },
+  {
+    quote:
+      'Adding a second truck was the scary part. Having one desk handle dispatch for both kept everything organized while we grew.',
+    name: 'Small fleet owner',
+    role: 'Flatbed · 2 trucks · Ohio',
+    sample: true,
+  },
+  {
+    quote:
+      'Detention used to just eat my day. Now someone else is on the phone with the shipper while I rest, and I actually hear back with an answer.',
+    name: 'Owner-operator',
+    role: 'Power only · Tennessee',
+    sample: true,
+  },
+  {
+    quote:
+      'I wanted to be home on weekends and they planned around it. The reloads line up so the week ends near the house instead of three states away.',
+    name: 'Small fleet owner',
+    role: 'Box truck · 4 trucks · Arizona',
+    sample: true,
+  },
+]

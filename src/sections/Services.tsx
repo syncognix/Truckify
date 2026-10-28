@@ -52,10 +52,24 @@ export function Services({ index = '01', moreLink = false }: { index?: string; m
   )
 }
 
+const TILT = 5
+
+/** Spotlight position + a gentle 3D tilt toward the cursor (mouse only). */
 function trackPointer(event: PointerEvent<HTMLElement>) {
-  const r = event.currentTarget.getBoundingClientRect()
-  event.currentTarget.style.setProperty('--mx', `${event.clientX - r.left}px`)
-  event.currentTarget.style.setProperty('--my', `${event.clientY - r.top}px`)
+  const el = event.currentTarget
+  const r = el.getBoundingClientRect()
+  const x = event.clientX - r.left
+  const y = event.clientY - r.top
+  el.style.setProperty('--mx', `${x}px`)
+  el.style.setProperty('--my', `${y}px`)
+  if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  el.style.setProperty('--ry', `${((x / r.width - 0.5) * TILT * 2).toFixed(2)}deg`)
+  el.style.setProperty('--rx', `${((0.5 - y / r.height) * TILT * 2).toFixed(2)}deg`)
+}
+
+function resetTilt(event: PointerEvent<HTMLElement>) {
+  event.currentTarget.style.setProperty('--rx', '0deg')
+  event.currentTarget.style.setProperty('--ry', '0deg')
 }
 
 function ServiceCard({ service }: { service: Service }) {
@@ -64,7 +78,8 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <article
       onPointerMove={trackPointer}
-      className={`spotlight group relative flex h-full min-h-[17rem] flex-col overflow-hidden rounded-panel border border-line transition-[border-color,background-color,transform] duration-700 ease-out-expo hover:-translate-y-1 hover:border-line-strong ${
+      onPointerLeave={resetTilt}
+      className={`spotlight beam group relative flex h-full min-h-[17rem] flex-col overflow-hidden rounded-panel border border-line [transform:perspective(1100px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] transition-[border-color,background-color,transform,translate] duration-700 ease-out-expo hover:-translate-y-1 hover:border-line-strong ${
         isPhoto ? 'bg-bg-sunk' : 'bg-card hover:bg-card-hover'
       }`}
     >

@@ -230,6 +230,56 @@
     filter: var(--c-video-filter);
   }
 
+  /* Cursor-following headlight over hero footage (see useHeadlight). */
+  .headlight {
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: overlay;
+    transition: opacity 0.6s var(--ease-out-expo);
+    background:
+      radial-gradient(circle 120px at var(--hx, 50%) var(--hy, 50%), rgb(255 252 235 / 0.55), transparent 70%),
+      radial-gradient(circle 460px at var(--hx, 50%) var(--hy, 50%), rgb(255 244 214 / 0.42), transparent 65%);
+  }
+  [data-lit='true'] .headlight {
+    opacity: 1;
+  }
+  [data-theme='light'] .headlight {
+    mix-blend-mode: soft-light;
+  }
+
+  /* Rotating signal beam around a card's border on hover. */
+  .beam::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    opacity: 0;
+    background: conic-gradient(from var(--beam-angle), transparent 0 72%, var(--c-accent) 86%, transparent 94%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 0.5s var(--ease-out-expo);
+  }
+  .beam:hover::before {
+    opacity: 1;
+    animation: beam-spin 3.2s linear infinite;
+  }
+
+  /* Gallery scroller: native scrollbar hidden — the custom ScrollRail is always visible instead. */
+  .gallery-scroller {
+    scrollbar-width: none;
+    scroll-padding-inline: clamp(1.25rem, 4vw, 3.5rem);
+    cursor: grab;
+  }
+  .gallery-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
   .hairline-grid {
     background-image: linear-gradient(to right, var(--c-line) 1px, transparent 1px);
     background-size: calc(100% / 12) 100%;
@@ -309,6 +359,18 @@
   }
   to {
     filter: blur(0) brightness(1);
+  }
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
   }
 }
 
