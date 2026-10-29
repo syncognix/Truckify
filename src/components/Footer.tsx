@@ -10,7 +10,7 @@ import { DotWordmark } from './DotWordmark'
 const YEAR = new Date().getFullYear()
 
 const linkClass =
-  'group/link relative inline-flex items-center gap-2 text-ink-muted transition-colors duration-300 hover:text-ink'
+  'group/link relative inline-flex items-center gap-2 py-1 text-ink-muted transition-colors duration-300 hover:text-ink'
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
@@ -27,8 +27,8 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-line bg-bg-sunk pt-20">
       <div className="shell">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-12">
-          <div className="col-span-2 flex flex-col gap-6 md:col-span-4">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-12">
+          <div className="col-span-2 flex flex-col gap-6 lg:col-span-4">
             <Logo />
             <p className="max-w-xs text-[0.95rem] text-ink-muted">
               Truck dispatching for owner-operators and small fleets. You run the road — we run the board.
@@ -45,7 +45,7 @@ export function Footer() {
             </button>
           </div>
 
-          <FooterCol title="Navigate" className="md:col-span-2 md:col-start-6">
+          <FooterCol title="Navigate" className="lg:col-span-2 lg:col-start-5">
             {NAV_LINKS.map((l) => (
               <FooterLink key={l.href} href={l.href}>
                 {l.label}
@@ -54,7 +54,7 @@ export function Footer() {
             <FooterLink href="/contact">Contact</FooterLink>
           </FooterCol>
 
-          <FooterCol title="Services" className="md:col-span-3">
+          <FooterCol title="Services" className="lg:col-span-3">
             {SERVICES.map((s) => (
               <FooterLink key={s.id} href={`/services#${s.id}`}>
                 {s.title}
@@ -62,14 +62,14 @@ export function Footer() {
             ))}
           </FooterCol>
 
-          <FooterCol title="Desk" className="col-span-2 md:col-span-2">
-            <a href={`mailto:${SITE.email.value}`} className={`${linkClass} break-all`}>
+          <FooterCol title="Desk" className="col-span-2 lg:col-span-3">
+            <a href={`mailto:${SITE.email.value}`} className={`${linkClass} break-words`}>
               {SITE.email.value}
             </a>
             <a href={`tel:${SITE.phone.value.replace(/[^\d+]/g, '')}`} className={linkClass}>
               {SITE.phone.value}
             </a>
-            <span className="text-ink-muted">{SITE.hours.value}</span>
+            <span className="py-1 text-ink-muted">{SITE.hours.value}</span>
             {SITE.social.map((s) => (
               <a key={s.href} href={s.href} target="_blank" rel="noreferrer" className={linkClass}>
                 {s.label}
@@ -105,7 +105,7 @@ function FooterCol({ title, className = '', children }: { title: string; classNa
   return (
     <div className={className}>
       <p className="label mb-5 text-ink-faint">{title}</p>
-      <div className="flex flex-col items-start gap-3 text-[0.95rem]">{children}</div>
+      <div className="flex flex-col items-start gap-1 text-[0.95rem]">{children}</div>
     </div>
   )
 }

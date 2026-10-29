@@ -17,7 +17,7 @@ export function Logo() {
       <LogoMark className="size-8 transition-transform duration-700 ease-out-expo group-hover:rotate-[-8deg]" />
       <span className="flex flex-col leading-none">
         <span className="text-[1.05rem] font-semibold tracking-[-0.04em]">Truckify</span>
-        <span className="label mt-1 text-[0.55rem] text-ink-faint">Dispatch Desk</span>
+        <span className="label mt-1 text-[0.6rem] text-ink-faint">Dispatch Desk</span>
       </span>
     </Link>
   )

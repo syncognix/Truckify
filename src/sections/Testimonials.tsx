@@ -74,7 +74,6 @@ export function Testimonials({ index = '—' }: { index?: string }) {
       <div className="mt-16">
         <ul
           ref={scroller}
-          role="region"
           aria-label="Carrier testimonials, scroll horizontally"
           tabIndex={0}
           className="-mx-1 flex snap-x snap-mandatory scroll-px-1 gap-4 overflow-x-auto overscroll-x-contain px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -120,8 +119,8 @@ export function Testimonials({ index = '—' }: { index?: string }) {
         </ul>
 
         {/* Controls: position dots + prev/next. */}
-        <div className="mt-8 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-2" role="group" aria-label="Choose testimonial">
+        <div className="mt-8 flex items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-1 sm:gap-2" role="group" aria-label="Choose testimonial">
             {TESTIMONIALS.map((_, i) => (
               <button
                 key={i}
@@ -129,7 +128,7 @@ export function Testimonials({ index = '—' }: { index?: string }) {
                 aria-label={`Go to testimonial ${i + 1}`}
                 aria-current={i === active ? 'true' : undefined}
                 onClick={() => goTo(i)}
-                className="group/dot grid h-8 place-items-center px-1"
+                className="group/dot grid h-8 min-w-6 place-items-center px-1"
               >
                 <span
                   className={`block h-1.5 rounded-full transition-all duration-500 ease-out-expo ${
@@ -138,7 +137,7 @@ export function Testimonials({ index = '—' }: { index?: string }) {
                 />
               </button>
             ))}
-            <span className="label ml-3 text-ink-faint tabular-nums">
+            <span className="label ml-3 hidden text-ink-faint tabular-nums sm:inline">
               {String(active + 1).padStart(2, '0')} / {String(TESTIMONIALS.length).padStart(2, '0')}
             </span>
           </div>

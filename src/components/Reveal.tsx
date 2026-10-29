@@ -31,7 +31,6 @@ export function Reveal({ children, className, delay = 0, as = 'div' }: RevealPro
       whileInView="shown"
       viewport={{ once: true, margin: '0px 0px -12% 0px' }}
       transition={{ delay }}
-      style={{ willChange: 'transform, filter, opacity' }}
     >
       {children}
     </Tag>
@@ -64,7 +63,7 @@ export function SplitWords({ text, className, delay = 0, onMount = false }: Spli
         <span key={`${word}-${i}`} aria-hidden>
           <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
             <m.span
-              className="inline-block will-change-transform"
+              className="inline-block"
               variants={{
                 hidden: { y: '105%', rotate: 4 },
                 shown: { y: '0%', rotate: 0, transition: { duration: 1, ease: EASE, delay: delay + i * 0.07 } },

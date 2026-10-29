@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 const STRIDE = 7
 const FONT_FAMILY = '"Geist Variable", ui-sans-serif, system-ui, sans-serif'
 const RIPPLE_MS = 900
+const HEAT_STEPS = 16
 
 interface DotWordmarkProps {
   text: string
@@ -45,15 +46,17 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
     let dpr = 1
     let dots = new Float32Array()
     let count = 0
-    let ink: [number, number, number] = [237, 232, 221]
-    let warm: [number, number, number] = [212, 255, 63]
+    let ink: [number, number, number] = [244, 242, 238]
+    let warm: [number, number, number] = [255, 107, 26]
     let pointerX = -1e5
     let pointerY = -1e5
     let ripple = { x: 0, y: 0, t: -1 }
     let frame = 0
-    let visible = true
+    // Starts hidden: the footer mounts with every page, but nothing is drawn until it scrolls into view.
+    let visible = false
     let dirty = true
     let dropped = false
+    let stale = true
     let alive = true
 
     const readColors = () => {
@@ -117,6 +120,8 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
       const age = ripple.t < 0 ? 1e9 : now - ripple.t
       const front = age * 0.9
       let moving = false
+      // One path per heat step (ink → signal), so a frame is ~17 fills rather than one per dot.
+      const paths: (Path2D | undefined)[] = []
 
       for (let i = 0; i < count; i++) {
         const k = i * STRIDE
@@ -168,21 +173,30 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
           dots[k + 3] = vy
         }
 
-        const heat = Math.min(1, Math.hypot(x - hx, y - hy) / 28)
-        ctx.fillStyle =
-          heat > 0.02
-            ? `rgb(${ink[0] + (warm[0] - ink[0]) * heat | 0},${ink[1] + (warm[1] - ink[1]) * heat | 0},${ink[2] + (warm[2] - ink[2]) * heat | 0})`
-            : `rgb(${ink[0]},${ink[1]},${ink[2]})`
-        ctx.beginPath()
-        ctx.arc(x, y, dots[k + 6], 0, Math.PI * 2)
-        ctx.fill()
+        const step = Math.round(Math.min(1, Math.hypot(x - hx, y - hy) / 28) * HEAT_STEPS)
+        const path = (paths[step] ??= new Path2D())
+        const r = dots[k + 6]
+        path.moveTo(x + r, y)
+        path.arc(x, y, r, 0, Math.PI * 2)
       }
+      paths.forEach((path, step) => {
+        if (!path) return
+        const heat = step / HEAT_STEPS
+        ctx.fillStyle = `rgb(${ink[0] + (warm[0] - ink[0]) * heat | 0},${ink[1] + (warm[1] - ink[1]) * heat | 0},${ink[2] + (warm[2] - ink[2]) * heat | 0})`
+        ctx.fill(path)
+      })
       dirty = moving || age < RIPPLE_MS || pointerX > -1e4
     }
 
+    const ensureLayout = () => {
+      if (!stale) return
+      stale = false
+      layout()
+    }
     const loop = (now: number) => {
       frame = 0
       if (!visible || !alive) return
+      ensureLayout()
       draw(now)
       if (dirty) frame = requestAnimationFrame(loop)
     }
@@ -213,9 +227,8 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
       drop(x, y)
     }
 
+    // Layout and drawing both wait until the wordmark is on screen (see ensureLayout / the IntersectionObserver).
     readColors()
-    layout()
-    draw(performance.now())
 
     if (!reduce) {
       wrap.addEventListener('pointermove', onMove)
@@ -223,7 +236,7 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
       wrap.addEventListener('pointerdown', onDown)
     }
     const ro = new ResizeObserver(() => {
-      layout()
+      stale = true
       wake()
     })
     ro.observe(wrap)
@@ -231,6 +244,7 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
       ([entry]) => {
         visible = entry.isIntersecting
         if (!visible) return
+        ensureLayout()
         if (!dropped && !reduce && entry.intersectionRatio > 0.5) {
           dropped = true
           drop(w / 2, h * 0.85)
@@ -247,7 +261,7 @@ export function DotWordmark({ text, crop = 0.18, className = '' }: DotWordmarkPr
     themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
     document.fonts?.ready.then(() => {
       if (!alive) return
-      layout()
+      stale = true
       wake()
     })
 

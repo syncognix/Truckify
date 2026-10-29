@@ -14,7 +14,7 @@ export function TbcTag({ label = 'TBC' }: { label?: string }) {
   return (
     <span
       title="Placeholder — confirm with the business before launch"
-      className="label ml-2 inline-flex translate-y-[-1px] items-center rounded-[3px] border border-dashed border-accent-text/60 px-1.5 py-[3px] align-middle text-[0.58rem] text-accent-text"
+      className="label ml-2 inline-flex translate-y-[-1px] items-center rounded-[3px] border border-dashed border-accent-2/60 px-1.5 py-[3px] align-middle text-[0.58rem] text-accent-2"
     >
       {label}
     </span>

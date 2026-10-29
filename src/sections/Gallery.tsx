@@ -230,7 +230,7 @@ function Tile({ tile, index }: { tile: GalleryTile; index: number }) {
             className="photo h-full w-full object-cover group-hover:[filter:none]"
           />
           <div aria-hidden className="absolute inset-0 bg-[linear-gradient(0deg,rgb(0_0_0/0.55),transparent_45%)]" />
-          <figcaption className="label absolute right-5 bottom-5 left-5 flex justify-between text-[#ede8dd]">
+          <figcaption className="label absolute right-5 bottom-5 left-5 flex justify-between text-on-dark">
             <span>{tile.caption}</span>
             <span className="opacity-60">{fig}</span>
           </figcaption>
@@ -309,21 +309,21 @@ function TerminalTile({ fig }: { fig: string }) {
   return (
     <div
       ref={ref}
-      className={`flex w-[min(85vw,30rem)] shrink-0 snap-center flex-col overflow-hidden rounded-panel border border-line bg-[#0c0c0b] text-[#ede8dd] ${TILE_H}`}
+      className={`flex w-[min(85vw,30rem)] shrink-0 snap-center flex-col overflow-hidden rounded-panel border border-line bg-dark text-on-dark ${TILE_H}`}
     >
       <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3.5">
         <span className="size-2.5 rounded-full bg-white/15" />
         <span className="size-2.5 rounded-full bg-white/15" />
-        <span className="size-2.5 rounded-full bg-[#d4ff3f]" />
+        <span className="size-2.5 rounded-full bg-accent-2" />
         <span className="label ml-auto text-white/40">dispatch.log · sample · {fig}</span>
       </div>
       <pre className="flex-1 overflow-hidden p-5 font-mono text-[0.78rem] leading-[1.9] whitespace-pre-wrap">
         {LOG.slice(0, lines).map((l) => (
-          <span key={l} className={`block ${l.startsWith('>') ? 'text-[#d4ff3f]' : 'text-white/55'}`}>
+          <span key={l} className={`block ${l.startsWith('>') ? 'text-accent-on-dark' : 'text-white/55'}`}>
             {l}
           </span>
         ))}
-        <span className="inline-block h-4 w-2 translate-y-0.5 bg-[#d4ff3f] animate-caret" />
+        <span className="inline-block h-4 w-2 translate-y-0.5 bg-accent-on-dark animate-caret" />
       </pre>
     </div>
   )

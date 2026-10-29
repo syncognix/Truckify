@@ -73,8 +73,8 @@ export function SplashScreen({ children }: { children: ReactNode }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       const styles = getComputedStyle(document.documentElement)
-      const ink = styles.getPropertyValue('--c-ink').trim() || '#ede8dd'
-      const signal = styles.getPropertyValue('--c-accent').trim() || '#d4ff3f'
+      const ink = styles.getPropertyValue('--c-ink').trim() || '#f4f2ee'
+      const signal = styles.getPropertyValue('--c-accent').trim() || '#ff6b1a'
 
       const off = document.createElement('canvas')
       off.width = w
@@ -103,19 +103,33 @@ export function SplashScreen({ children }: { children: ReactNode }) {
             })
       canvas.dataset.ready = 'true'
 
+      // Particles are batched into one path per (colour, alpha step): a few dozen fills a frame instead of thousands.
+      const STEPS = 24
       const draw = (now: number) => {
         if (cancelled) return
         const t = (now - start) / 1000
         ctx.clearRect(0, 0, w, h)
+        const paths: (Path2D | undefined)[] = []
         for (const p of particles) {
           const life = Math.max(0, t - 0.9 - p.delay)
-          ctx.globalAlpha = Math.max(0, 1 - life / 1.6) * Math.min(1, t * 4)
-          ctx.fillStyle = p.signal && life > 0 ? signal : ink
+          const step = Math.round(Math.max(0, 1 - life / 1.6) * Math.min(1, t * 4) * STEPS)
+          if (step === 0) continue
+          const key = (p.signal && life > 0 ? STEPS + 1 : 0) + step
+          const path = (paths[key] ??= new Path2D())
           const sway = Math.sin(life * 3 + p.y * 0.03) * life * 14
-          ctx.beginPath()
-          ctx.arc(p.x + p.vx * life + sway, p.y + p.vy * life, p.size + life * 0.4, 0, Math.PI * 2)
-          ctx.fill()
+          const x = p.x + p.vx * life + sway
+          const y = p.y + p.vy * life
+          const r = p.size + life * 0.4
+          path.moveTo(x + r, y)
+          path.arc(x, y, r, 0, Math.PI * 2)
         }
+        paths.forEach((path, key) => {
+          if (!path) return
+          const isSignal = key > STEPS
+          ctx.globalAlpha = (isSignal ? key - STEPS - 1 : key) / STEPS
+          ctx.fillStyle = isSignal ? signal : ink
+          ctx.fill(path)
+        })
         ctx.globalAlpha = 1
         if (t < 3.4) frame = requestAnimationFrame(draw)
       }

@@ -52,7 +52,7 @@ export function PageHero({ page, code, eyebrow, title, accent, lede, actions, as
 
       <div className="shell relative flex min-h-[max(78svh,600px)] flex-col pt-28 pb-12 sm:pt-32 lg:pb-16">
         <nav aria-label="Breadcrumb" className="label flex items-center gap-3 text-ink-faint">
-          <Link href="/" className="transition-colors hover:text-ink">
+          <Link href="/" className="-my-3 py-3 transition-colors hover:text-ink">
             Truckify
           </Link>
           <span aria-hidden>/</span>

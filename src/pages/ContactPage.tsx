@@ -21,7 +21,7 @@ export default function ContactPage() {
             <div>
               <dt className="label text-ink-faint">Email</dt>
               <dd className="mt-1">
-                <a href={`mailto:${SITE.email.value}`} className="hover:text-accent-text">
+                <a href={`mailto:${SITE.email.value}`} className="-my-1 inline-block py-1 hover:text-accent-text">
                   <FactText fact={SITE.email} />
                 </a>
               </dd>

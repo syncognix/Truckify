@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+colors_to_use/*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+colors_to_use/Color-1.jpeg
+colors_to_use/Color-2.jpeg
+colors_to_use/Color-3.jpeg

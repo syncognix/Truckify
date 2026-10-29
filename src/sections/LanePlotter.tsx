@@ -201,15 +201,15 @@ export function LanePlotter({ index = '01' }: { index?: string }) {
             <span>LN-{a.code}-{b.code}</span>
           </div>
 
-          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-end gap-3">
+          <div className="mt-6 grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_auto_1fr]">
             <HubSelect id={ids.o} label="Origin" value={origin} exclude={dest} onChange={setOrigin} />
             <button
               type="button"
               onClick={swap}
               aria-label="Swap origin and destination"
-              className="mb-1 grid size-10 place-items-center rounded-full border border-line transition-colors hover:border-accent hover:bg-accent hover:text-accent-ink"
+              className="grid size-11 place-items-center justify-self-center rounded-full border border-line transition-colors hover:border-accent hover:bg-accent hover:text-accent-ink sm:mb-1 sm:size-10"
             >
-              <ArrowLeftRight className="size-4" />
+              <ArrowLeftRight className="size-4 rotate-90 sm:rotate-0" />
             </button>
             <HubSelect id={ids.d} label="Destination" value={dest} exclude={origin} onChange={setDest} />
           </div>

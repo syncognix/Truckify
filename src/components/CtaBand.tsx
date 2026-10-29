@@ -16,11 +16,12 @@ export function CtaBand({ title = 'Let’s fill', accent = 'your board.' }: { ti
         className="absolute top-1/2 left-1/2 size-[min(70vw,46rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--c-accent)_16%,transparent),transparent_65%)]"
       />
       <div className="shell relative flex flex-col items-center text-center">
-        <p className="label mb-8 flex items-center gap-3 text-ink-muted">
+        <p className="label mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-ink-muted">
           <span className="size-1.5 rounded-full bg-accent animate-pulse-dot" />
           Desk open
-          <span className="text-ink-faint">
-            · <FactText fact={SITE.hours} />
+          <span className="w-full text-ink-faint sm:w-auto">
+            <span className="hidden sm:inline">· </span>
+            <FactText fact={SITE.hours} />
           </span>
         </p>
         <h2 id="cta-title" className="text-mega font-semibold tracking-[-0.055em]">

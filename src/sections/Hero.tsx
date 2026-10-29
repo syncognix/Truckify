@@ -178,7 +178,7 @@ function HeroRoute() {
       aria-hidden
       viewBox="0 0 1440 800"
       preserveAspectRatio="xMidYMid slice"
-      className="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-70"
+      className="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-70 will-change-transform"
     >
       <path d={d} fill="none" stroke="var(--c-line-strong)" strokeWidth="1" />
       <path

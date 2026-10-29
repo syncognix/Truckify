@@ -20,7 +20,7 @@ function readInitial(): Theme {
 function apply(theme: Theme) {
   document.documentElement.dataset.theme = theme
   document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
-    m.setAttribute('content', theme === 'light' ? '#F1EDE4' : '#0A0A09')
+    m.setAttribute('content', theme === 'light' ? '#F4F2EE' : '#16181D')
   })
   try {
     localStorage.setItem(STORAGE_KEY, theme)

@@ -14,56 +14,73 @@
    ------------------------------------------------------------------ */
 :root,
 [data-theme='dark'] {
-  /* Night Haul — sodium-dark cab, ivory instruments, hi-vis signal */
-  --c-bg: #0a0a09;
-  --c-bg-elev: #121210;
-  --c-bg-sunk: #070706;
-  --c-ink: #ede8dd;
-  --c-ink-muted: #a7a196;
-  --c-ink-faint: #868177;
-  --c-line: rgb(237 232 221 / 0.11);
-  --c-line-strong: rgb(237 232 221 / 0.22);
-  --c-accent: #d4ff3f;
-  --c-accent-ink: #0a0a09;
-  --c-accent-text: #d4ff3f;
-  --c-glass: rgb(16 16 14 / 0.52);
-  --c-glass-strong: rgb(16 16 14 / 0.78);
+  /* Asphalt & Safety Orange — charcoal cab, concrete-white instruments, hi-vis orange signal.
+     Reference: Safety Orange #FF6B1A, Asphalt #16181D, Gunmetal #3D424A, Concrete White #F4F2EE,
+     Light Steel #E3E1DC, Road Grey #7A7E85. Text tokens are tuned to clear WCAG AA on every surface. */
+  --c-bg: #16181d;
+  --c-bg-elev: #1d2026;
+  --c-bg-sunk: #101216;
+  --c-ink: #f4f2ee;
+  --c-ink-muted: #a9adb4;
+  --c-ink-faint: #8a8e95;
+  --c-line: rgb(244 242 238 / 0.1);
+  --c-line-strong: rgb(244 242 238 / 0.2);
+  --c-accent: #ff6b1a;
+  --c-accent-ink: #16181d;
+  --c-accent-text: #ff7d36;
+  /* Secondary signal for badges / placeholder tags (this palette has one hue, so a text-safe orange). */
+  --c-accent-2: #ff7d36;
+  /* Always-dark surfaces (terminal tile, cursor outline) regardless of theme. */
+  --c-dark: #101216;
+  --c-on-dark: #f4f2ee;
+  --c-accent-on-dark: #ff7d36;
+  /* Errors stay a cooler red so they never read as the orange accent. */
+  --c-danger: #ff5468;
+  --c-danger-text: #ff5468;
+  --c-glass: rgb(22 24 29 / 0.55);
+  --c-glass-strong: rgb(22 24 29 / 0.82);
   --c-glass-border: rgb(255 255 255 / 0.09);
   --c-glass-highlight: rgb(255 255 255 / 0.07);
-  --c-card: rgb(237 232 221 / 0.035);
-  --c-card-hover: rgb(237 232 221 / 0.06);
-  --c-photo-tint: rgb(10 10 9 / 0.5);
+  --c-card: rgb(244 242 238 / 0.035);
+  --c-card-hover: rgb(244 242 238 / 0.06);
+  --c-photo-tint: rgb(22 24 29 / 0.5);
   --c-photo-filter: grayscale(1) contrast(1.08) brightness(0.86);
-  --c-dot: rgb(237 232 221 / 0.3);
+  --c-dot: rgb(244 242 238 / 0.28);
   --c-video-filter: saturate(0.55) contrast(1.06) brightness(0.92);
   --shadow-float: 0 40px 100px -30px rgb(0 0 0 / 0.75), 0 2px 0 0 rgb(255 255 255 / 0.03) inset;
   color-scheme: dark;
 }
 
 [data-theme='light'] {
-  /* Day Shift — warm bond paper, carbon ink, the same hi-vis signal */
-  --c-bg: #f1ede4;
-  --c-bg-elev: #e9e4d8;
-  --c-bg-sunk: #e2dccf;
-  --c-ink: #14140f;
-  --c-ink-muted: #47443d;
-  --c-ink-faint: #615d55;
-  --c-line: rgb(20 20 15 / 0.12);
-  --c-line-strong: rgb(20 20 15 / 0.24);
-  --c-accent: #d4ff3f;
-  --c-accent-ink: #14140f;
-  --c-accent-text: #4b6500;
-  --c-glass: rgb(246 243 236 / 0.58);
-  --c-glass-strong: rgb(246 243 236 / 0.86);
-  --c-glass-border: rgb(20 20 15 / 0.09);
+  /* Day Shift — concrete white, asphalt ink, the same safety-orange signal */
+  --c-bg: #f4f2ee;
+  --c-bg-elev: #e3e1dc;
+  --c-bg-sunk: #dfdcd6;
+  --c-ink: #16181d;
+  --c-ink-muted: #3d424a;
+  --c-ink-faint: #5b5f66;
+  --c-line: rgb(22 24 29 / 0.12);
+  --c-line-strong: rgb(22 24 29 / 0.24);
+  --c-accent: #ff6b1a;
+  --c-accent-ink: #16181d;
+  --c-accent-text: #a3400c;
+  --c-accent-2: #a3400c;
+  --c-dark: #16181d;
+  --c-on-dark: #f4f2ee;
+  --c-accent-on-dark: #ff7d36;
+  --c-danger: #c8102e;
+  --c-danger-text: #c8102e;
+  --c-glass: rgb(244 242 238 / 0.6);
+  --c-glass-strong: rgb(244 242 238 / 0.88);
+  --c-glass-border: rgb(22 24 29 / 0.09);
   --c-glass-highlight: rgb(255 255 255 / 0.7);
   --c-card: rgb(255 255 255 / 0.42);
   --c-card-hover: rgb(255 255 255 / 0.7);
-  --c-photo-tint: rgb(241 237 228 / 0.08);
-  --c-photo-filter: grayscale(1) contrast(1.04) brightness(1.02) sepia(0.12);
-  --c-dot: rgb(20 20 15 / 0.28);
-  --c-video-filter: saturate(0.45) sepia(0.12) contrast(1.02) brightness(1.04);
-  --shadow-float: 0 40px 90px -40px rgb(60 50 30 / 0.35), 0 1px 0 0 rgb(255 255 255 / 0.8) inset;
+  --c-photo-tint: rgb(244 242 238 / 0.08);
+  --c-photo-filter: grayscale(1) contrast(1.04) brightness(1.02);
+  --c-dot: rgb(22 24 29 / 0.26);
+  --c-video-filter: saturate(0.45) contrast(1.02) brightness(1.04);
+  --shadow-float: 0 40px 90px -40px rgb(22 24 29 / 0.3), 0 1px 0 0 rgb(255 255 255 / 0.8) inset;
   color-scheme: light;
 }
 
@@ -79,6 +96,12 @@
   --color-accent: var(--c-accent);
   --color-accent-ink: var(--c-accent-ink);
   --color-accent-text: var(--c-accent-text);
+  --color-accent-2: var(--c-accent-2);
+  --color-dark: var(--c-dark);
+  --color-on-dark: var(--c-on-dark);
+  --color-accent-on-dark: var(--c-accent-on-dark);
+  --color-danger: var(--c-danger);
+  --color-danger-text: var(--c-danger-text);
   --color-glass: var(--c-glass);
   --color-glass-strong: var(--c-glass-strong);
   --color-glass-border: var(--c-glass-border);
@@ -389,13 +412,16 @@
   }
 }
 
+/* Beacon ring on a pseudo-element: transform + opacity stay on the compositor (a box-shadow pulse repaints every frame). */
 @keyframes pulse-dot {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--c-accent) 60%, transparent);
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
   }
-  50% {
-    box-shadow: 0 0 0 6px transparent;
+  50%,
+  100% {
+    transform: scale(3);
+    opacity: 0;
   }
 }
 
@@ -415,6 +441,14 @@
   animation: marquee 48s linear infinite;
 }
 .animate-pulse-dot {
+  position: relative;
+}
+.animate-pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--c-accent);
   animation: pulse-dot 2.2s ease-in-out infinite;
 }
 .animate-dash {

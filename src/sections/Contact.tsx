@@ -35,12 +35,12 @@ export function Contact() {
 
           <dl className="mt-auto grid gap-px overflow-hidden rounded-panel border border-line bg-line pt-0 sm:grid-cols-2 max-lg:mt-12">
             <ContactFact term="Email">
-              <a href={`mailto:${SITE.email.value}`} className="hover:text-accent-text">
+              <a href={`mailto:${SITE.email.value}`} className="-my-1 inline-block py-1 hover:text-accent-text">
                 <FactText fact={SITE.email} />
               </a>
             </ContactFact>
             <ContactFact term="Phone">
-              <a href={`tel:${SITE.phone.value.replace(/[^\d+]/g, '')}`} className="hover:text-accent-text">
+              <a href={`tel:${SITE.phone.value.replace(/[^\d+]/g, '')}`} className="-my-1 inline-block py-1 hover:text-accent-text">
                 <FactText fact={SITE.phone} />
               </a>
             </ContactFact>
@@ -282,11 +282,11 @@ function Field({
       </label>
       {children({
         id,
-        className: `${CONTROL} ${error ? 'border-[#ff6b4a]' : 'border-line hover:border-line-strong'}`,
+        className: `${CONTROL} ${error ? 'border-danger' : 'border-line hover:border-line-strong'}`,
         ...(error ? { 'aria-invalid': true as const, 'aria-describedby': errId } : {}),
       })}
       {error && (
-        <p id={errId} className="mt-1.5 text-[0.78rem] text-[#e2553a]">
+        <p id={errId} className="mt-1.5 text-[0.78rem] text-danger-text">
           {error}
         </p>
       )}

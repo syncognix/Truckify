@@ -34,7 +34,7 @@ export default function Legal({ kind }: { kind: keyof typeof COPY }) {
       <h1 id="legal-title" className="text-mega font-semibold tracking-[-0.055em]">
         {page.title}
       </h1>
-      <div className="mt-6 inline-flex items-center rounded-full border border-dashed border-accent-text/60 px-4 py-2 text-[0.85rem] text-accent-text">
+      <div className="mt-6 inline-flex items-center rounded-full border border-dashed border-accent-2/60 px-4 py-2 text-[0.85rem] text-accent-2">
         Draft — full policy to be supplied and reviewed by the business before launch.
         <TbcTag />
       </div>
